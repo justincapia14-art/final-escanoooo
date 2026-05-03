@@ -299,6 +299,7 @@ def play_master(screen, world_surface, width, height, clock, font, vignette_surf
         if keys_collected == 3:
             master_music.fadeout(1000)
             if keys[pygame.K_RETURN] and player_rect.colliderect(door_rect):
+                screen.blit(black, (0, 0))
                 victory_sound.play()
                 return "victory"
 

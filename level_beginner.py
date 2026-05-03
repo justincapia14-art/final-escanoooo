@@ -239,6 +239,7 @@ def play_beginner(screen, world_surface, width, height, clock, font, vignette_su
         if keys_collected == 3:
             pygame.mixer.music.fadeout(1000)
             if keys[pygame.K_RETURN] and player_rect.colliderect(door_rect):
+                screen.blit(black, (0, 0))
                 victory_sound.play()
                 return "victory"
 
@@ -505,6 +506,7 @@ def play_beginner(screen, world_surface, width, height, clock, font, vignette_su
             screen.blit(back_button_game, back_button_game_rect)
 
         if player_hp <= 0:
+            
             defeat_sound.play()
             return "defeat"
 

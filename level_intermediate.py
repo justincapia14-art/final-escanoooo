@@ -270,6 +270,7 @@ def play_intermediate(screen, world_surface, width, height, clock, font, vignett
         if keys_collected == 3:
             intermediate_music.fadeout(1000)
             if keys[pygame.K_RETURN] and player_rect.colliderect(door_rect):
+                screen.blit(black, (0, 0))
                 victory_sound.play()
                 return "victory"
 

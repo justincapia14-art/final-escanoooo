@@ -194,9 +194,21 @@ while running:
         else:
             screen.blit(back_button, back_button_rect)
 
-
     elif game_state == "loading":
-        screen.blit(background_menu_scaled, (0, 0))
+        ret, frame = video_main.read()
+
+        if not ret:
+            video_main.set(cv2.CAP_PROP_POS_FRAMES, 0)
+            ret, frame = video_main.read()
+            
+        if ret:
+            frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            video_surface = pygame.image.frombuffer(frame_rgb.tobytes(), frame_rgb.shape[1::-1], "RGB")
+            video_surface = pygame.transform.scale(video_surface, (width, height))
+            screen.blit(video_surface, (0, 0))
+        else:
+            screen.blit(background_menu_scaled, (0, 0))
+
         load_text = font.render("LOADING...", True, (255, 255, 255))
         screen.blit(load_text, (width // 2 - 50, 420))
 
@@ -259,6 +271,7 @@ while running:
         screen.blit(victory_bg, (0, 0))
 
     elif game_state == "defeat":
+        charging.stop()
         intermediate_music.fadeout(1000)
         master_music.fadeout(1000)
         exit_music.fadeout(1000)

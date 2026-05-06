@@ -90,8 +90,6 @@ def check_life_collection(player_rect, life_rects, lives_collected, current_hp, 
     return lives_collected, current_hp, just_healed
 
 
-# mechanics.py (Sa pinakababa)
-
 class HealEffect:
     def __init__(self):
         self.timer = 30 #frame of effect duration
@@ -232,9 +230,9 @@ class EscanoUltimate:
         return 0, 0
 
     def draw_glow(self, surface, player_x, player_y, player_width, player_height):
-        # 1. MAG-SPAWN NG PARTICLES HABANG NAG-CHACHARGE
+        # MAG-SPAWN NG PARTICLES HABANG NAG-CHACHARGE
         if self.is_charging:
-            # Mag-spawn ng 3 particles per frame para makapal ang aura
+            # Mag-spawn ng 3 particles per frame
             for _ in range(3):
                 self.charge_particles.append({
                     'x': player_x + random.uniform(0, player_width), 
@@ -247,13 +245,15 @@ class EscanoUltimate:
                     'color': random.choice([(255, 150, 0), (255, 200, 0), (255, 255, 100)]) 
                 })
 
-        # 2. I-DRAW ANG PARTICLES NA MAY "GLOW" EFFECT
+        # I-DRAW ANG PARTICLES 
         for p in self.charge_particles:
             size = int(p['size'])
             if size > 0:
-                # Faint outer glow (naka-transparent na circle sa likod)
+                # Faint outer glow 
                 glow_surf = pygame.Surface((size * 4, size * 4), pygame.SRCALPHA)
+                # Nagkakaroon ng kulay at hugis 
                 pygame.draw.circle(glow_surf, (*p['color'], 80), (size * 2, size * 2), size * 2)
+                # Lumilitaw na sa screen ng player ang ginawa ng "glow."
                 surface.blit(glow_surf, (p['x'] - size * 2, p['y'] - size * 2))
 
                 # Solid na core ng particle (sa gitna)

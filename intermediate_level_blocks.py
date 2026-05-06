@@ -10,7 +10,7 @@ MAZE_MAP = [
     "  BBBBBBBBBBBBBBBBBBBBBBBBBBB   BBBBBBBB",
     "                                      BB",
     "        BBBBBBBBBBB                     ",
-    "           BBBB   BBBBB   B    BBB      ",
+    "       BB   BBBB   BBBBB   B    BBB     ",
     "           BBBB           BB            ",
     "           BBBB           BB            ",
     "BBBBBBBBBBBBBBB           BBBBBBB  BBBBB",

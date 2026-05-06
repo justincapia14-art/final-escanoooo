@@ -217,9 +217,15 @@ while running:
         bar_x = (width // 2) - (bar_width // 2)
         bar_y = 460
 
+        #gray
         pygame.draw.rect(screen, (50, 50, 50), (bar_x, bar_y, bar_width, bar_height))
+
         fill_width = int((loading_progress / 100) * bar_width)
+        
+        #yellow
         pygame.draw.rect(screen, (255, 215, 0), (bar_x, bar_y, fill_width, bar_height))
+
+        #border
         pygame.draw.rect(screen, (255, 255, 255), (bar_x, bar_y, bar_width, bar_height), 2)
 
         loading_progress += 0.5

@@ -11,7 +11,7 @@ class Enemy:
         self.facing = "left"
 
         # -----BUHAY NG KALABAN ---
-        self.max_hp = 100   # baguhin kung gaano kakunat ang kalaban
+        self.max_hp = 100   # kunat ng kalaban
         self.hp = self.max_hp
         
         # --- FADE OUT VARIABLES ---
@@ -33,7 +33,7 @@ class Enemy:
         # Kapag patay na ang kalaban
         if self.hp <= 0:
             if not self.is_dead:
-                self.bullets.clear() # Tanggalin lahat ng bala niya sa screen
+                self.bullets.clear() # Tanggalin lahat ng bala sa screen
                 self.is_dead = True
 
                 if dead_sound:
@@ -70,7 +70,7 @@ class Enemy:
                 dx /= distance
                 dy /= distance
 
-                speed = 1.5
+                speed = 1.5 #enemy speed aim
 
                 self.bullets.append([
                     self.x,
@@ -159,12 +159,12 @@ class Boss:
         self.hp = self.max_hp
         self.is_dead = False
         
-        self.speed = 3.5  # Bibilisan natin konti para ramdam ang sugod
+        self.speed = 3.5  # Bibilisan konti para ramdam ang sugod
         self.angle = 0  
 
         # ---> STATE MACHINE VARIABLES <---
-        self.state = "wait"  # Pwedeng "wait" o "roll"
-        self.timer = 180     # Magsisimula sa 120 frames (2 seconds cooldown)
+        self.state = "wait"  # Pwedeng "wait" 
+        self.timer = 180     # 120 frames (2 seconds cooldown)
 
         self.image = pygame.transform.scale(
             pygame.image.load("enemy/Boss.png").convert_alpha(), (self.width, self.height)
@@ -181,15 +181,13 @@ class Boss:
         boss_centerx = self.x + self.width // 2
         boss_centery = self.y + self.height // 2
 
-        # ==========================================
-        # BAGONG LOGIC PARA SA STATE MACHINE NG BOSS
-        # ==========================================
+
         if self.state == "wait":
             # Kapag magka-level ang Boss at Player sa Y-axis, mag-uumpisa bumawas ang timer
             if abs(player_rect.centery - boss_centery) < 50:
                 self.timer -= 1  # Bawasan ang cooldown timer
                 
-                # Kapag 0 na ang wait timer, oras na para sumugod!
+                # Kapag 0 na ang wait timer, oras na para sumugod
                 if self.timer <= 0:
                     self.state = "roll"
                     self.timer = 90  # Gugulong siya ng 1.5 seconds (90 frames)
@@ -202,13 +200,9 @@ class Boss:
                 self.timer = 120
 
         elif self.state == "roll":
-            # ==========================================
-            # ROLLING STATE - TULOY ANG IKOT KAHIT TUMALON
-            # ==========================================
-            # 1. I-save muna ang lumang position bago gumulong
+            # I-save ang lumang position bago gumulong
             old_x = self.x
 
-            # 2. Sumunod sa X position ng player
             if player_rect.centerx < boss_centerx:
                 self.x -= self.speed
                 self.angle += 12  # Mas mabilis na ikot
@@ -216,10 +210,10 @@ class Boss:
                 self.x += self.speed
                 self.angle -= 12  # Mas mabilis na ikot
 
-            # 3. Gawa ng Rect ng boss sa bago niyang position
+            # Rect ng boss sa bago niyang position
             boss_rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
-            # 4. I-check kung may tinamaan na block (platform)
+            #  I-check kung may tinamaan na block (platform)
             for plat in platforms:
                 if boss_rect.colliderect(plat):
                     self.x = old_x  # I-cancel ang galaw at wag lumusot
@@ -235,19 +229,17 @@ class Boss:
                 self.state = "wait"
                 self.timer = 180  # Balik ulit sa cooldown
                 
-                # ==========================================
-                # MAG-SHOOT NG MGA BULLETS PAGKATAPOS GUMULONG
-                # ==========================================
+
                 if boss_shoot_sound:
                     boss_shoot_sound.play()
                     
                 for _ in range(10):
-                    # Random angle (paikot sa boss)
-                    angle = random.uniform(0, 2 * math.pi)
-                    speed = random.uniform(1, 1) # Random speed para kalat
+                    # Random angle 
+                    angle = random.uniform(0, 2 * math.pi) 
+                    speed = random.uniform(1, 1) # Random speed 
                     
-                    b_dx = math.cos(angle) * speed
-                    b_dy = math.sin(angle) * speed
+                    b_dx = math.cos(angle) * speed #horizontal
+                    b_dy = math.sin(angle) * speed #vertical
                     
                     self.bullets.append([boss_centerx, boss_centery, b_dx, b_dy])
 
@@ -258,12 +250,8 @@ class Boss:
         # Update the timer para gumalaw ang animation ng ilaw
         self.pulse_timer += 0.05  # Bilis ng pag-pulse ng ilaw
 
-        # ==========================================================
-        # 2. PULSING RED LIGHT SA LIKOD NG BOSS
-        # ==========================================================
         base_radius = int(self.width * 0.8) # Normal size ng ilaw
         
-        # math.sin para mag-fluctuate ang laki ng ilaw (lalaki at liliit ng 10 pixels)
         pulse_offset = math.sin(self.pulse_timer) * 10 
         light_radius = int(base_radius + pulse_offset)
         
@@ -275,9 +263,8 @@ class Boss:
             light_x = self.x + self.width // 2 - light_radius
             light_y = self.y + self.height // 2 - light_radius
             screen.blit(light_surface, (light_x, light_y))
-        # ==========================================================
 
-        # NORMAL NA DRAWING NG BOSS (Hindi na mag-iiba ang size)
+        # NORMAL NA DRAWING NG BOSS 
         rotated_img = pygame.transform.rotate(self.image, self.angle)
         new_rect = rotated_img.get_rect(center=(self.x + self.width // 2, self.y + self.height // 2))
         screen.blit(rotated_img, new_rect.topleft)
@@ -367,9 +354,9 @@ class BigBoss:
         dy = player_rect.centery - boss_centery
         distance = math.sqrt(dx**2 + dy**2)
 
-        # SUSUNOD KAPAG WITHIN 200 PIXELS
+        # SUSUNOD WITHIN 200 PIXELS
         if distance < 200 and distance > 0:
-            self.x += (dx / distance) * self.speed
+            self.x += (dx / distance) * self.speed #KINUKUHA YONG UNIT VECTOR
             self.y += (dy / distance) * self.speed
 
             # SHOOTING 20 BULLETS LOGIC
@@ -390,15 +377,15 @@ class BigBoss:
         else:
             self.shoot_timer = 0 # Tigil tira kapag lumayo
             
-            # --- PARA BUMALIK SA DATING PWESTO ---
+            # --- BUMALIK SA DATING PWESTO ---
             dx_start = self.start_x - self.x
             dy_start = self.start_y - self.y
-            dist_start = math.sqrt(dx_start**2 + dy_start**2)
+            dist_start = math.sqrt(dx_start**2 + dy_start**2) #TO GET THE EXACT position
 
             # Kapag malayo pa siya sa original pwesto niya, babalik siya
-            if dist_start > 2: # May maliit na buffer para hindi mag-jitter/manginig
+            if dist_start > 2:
                 # x2 yung speed para mabilis siyang bumalik
-                self.x += (dx_start / dist_start) * (self.speed * 2)
+                self.x += (dx_start / dist_start) * (self.speed * 2) #UNIT VECTOR
                 self.y += (dy_start / dist_start) * (self.speed * 2)
             else:
                 # Kapag sobrang lapit na, lock na eksakto sa original pwesto

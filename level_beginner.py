@@ -99,7 +99,7 @@ def play_beginner(screen, world_surface, width, height, clock, font, vignette_su
             if event.type == pygame.MOUSEWHEEL:
                 current_skill_index = (current_skill_index + event.y) % len(skills_list)
                 current_skill = skills_list[current_skill_index]
-                skill_ui_timer = 120 
+                skill_ui_timer = 120
                 click_sound.play()
                 
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -142,14 +142,14 @@ def play_beginner(screen, world_surface, width, height, clock, font, vignette_su
             escano_ult.charge_timer = 0
             if current_skill == "Gun":
                 if left_click and player_shoot_cooldown <= 0:
-                    player_bullets.append([x, y + (player_height // 2), -7]) 
+                    player_bullets.append([x, y + (player_height // 2), -7])  #for left
                     player_shoot_cooldown = max_shoot_cooldown
                     shoot_anim_timer = 15
                     aim_direction = "left"
                     player_shoot_sound.play()
                     
                 elif right_click and player_shoot_cooldown <= 0:
-                    player_bullets.append([x + player_width, y + (player_height // 2), 7])
+                    player_bullets.append([x + player_width, y + (player_height // 2), 7]) #for right
                     player_shoot_cooldown = max_shoot_cooldown
                     shoot_anim_timer = 15
                     aim_direction = "right"
@@ -325,7 +325,7 @@ def play_beginner(screen, world_surface, width, height, clock, font, vignette_su
             frame_index = 0
         current_frame = coin_frames[int(frame_index)]
 
-        # --- MANUAL DRAW AND CHECK ITEMS ---
+        # --- CHECK ITEMS ---
         for i in range(len(level_keys)):
             if not keys_collected_status[i]:
                 draw_x = level_keys[i].x
@@ -481,13 +481,17 @@ def play_beginner(screen, world_surface, width, height, clock, font, vignette_su
             if current_skill == "Gun":
                 text_color = (100, 255, 100) 
             else:
-                text_color = (255, 150, 0)   
+                text_color = (255, 150, 0)
+
             ui_text = font.render(f"EQUIPPED: {current_skill.upper()}", True, text_color)
             text_rect = ui_text.get_rect(center=(width // 2, height - 30))
+
             alpha = min(255, int((skill_ui_timer / 120) * 255 * 2))
             ui_surface = pygame.Surface((text_rect.width + 20, text_rect.height + 10), pygame.SRCALPHA)
+            
             pygame.draw.rect(ui_surface, (0, 0, 0, alpha // 2), ui_surface.get_rect(), border_radius=5)
             ui_text.set_alpha(alpha)
+
             screen.blit(ui_surface, (text_rect.x - 10, text_rect.y - 5))
             screen.blit(ui_text, text_rect)
 

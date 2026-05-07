@@ -6,7 +6,7 @@ class Particle:
         self.x = x
         self.y = y
         self.size = random.randint(2, 5)
-        self.color = (255, 140, 0)  # light gray for dust
+        self.color = (255, 140, 0) 
         self.vel_x = random.uniform(-1, 1)
         self.vel_y = random.uniform(-1, -0.5)
         self.lifetime = 15  # frames

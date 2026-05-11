@@ -197,7 +197,7 @@ def play_intermediate(screen, world_surface, width, height, clock, font, vignett
                 e_rect = pygame.Rect(e.x, e.y, 40, 40)
                 if e.hp > 0 and laser_rect.colliderect(e_rect):
                     if e not in escano_ult.active_laser['hit_enemies']:
-                        e.hp -= 60 
+                        e.hp -= escano_ult.active_laser['damage'] 
                         escano_ult.active_laser['hit_enemies'].append(e) 
                         if e.hp <= 0:
                             enemy_dead_sound.play() 
@@ -211,7 +211,7 @@ def play_intermediate(screen, world_surface, width, height, clock, font, vignett
                 b_rect = pygame.Rect(b.x, b.y, b.width, b.height)
                 if b.hp > 0 and laser_rect.colliderect(b_rect):
                     if b not in escano_ult.active_laser['hit_bosses']:
-                        b.hp -= 200  
+                        b.hp -= escano_ult.active_laser['damage'] 
                         escano_ult.active_laser['hit_bosses'].append(b)
                         if b.hp <= 0:
                             enemy_dead_sound.play()

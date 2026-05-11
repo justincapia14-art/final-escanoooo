@@ -56,6 +56,7 @@ def get_platforms():
     platforms.append(pygame.Rect(300, 220, 20, 20))
     platforms.append(pygame.Rect(340, 160, 20, 20))
     platforms.append(pygame.Rect(300, 120, 20, 20))
+    platforms.append(pygame.Rect(260, 120, 20, 20))
 
     return platforms
 
@@ -114,3 +115,4 @@ def draw_platforms(screen, ground1, ground2, brick1, brick2):
     screen.blit(brick1, (300, 220))
     screen.blit(brick1, (340, 160))
     screen.blit(brick1, (300, 120))
+    screen.blit(brick1, (260, 120))

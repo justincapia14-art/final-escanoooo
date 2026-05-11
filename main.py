@@ -3,6 +3,8 @@ import sys
 import random
 import math
 import cv2
+import os
+from pathlib import Path
 
 pygame.init()
 pygame.mixer.init()
@@ -22,8 +24,8 @@ from level_intermediate import play_intermediate
 from level_master import play_master
 
 from mechanics import (
-    check_key_collection, 
-    check_coin_collection, 
+    check_key_collection,
+    check_coin_collection,
     check_pre_gravity_ground, 
     handle_horizontal_collision, 
     handle_vertical_collision,

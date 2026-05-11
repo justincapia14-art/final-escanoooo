@@ -116,17 +116,16 @@ class HealEffect:
             
             surface.blit(effect_surf, (center_x - size // 2, center_y - size // 2))
 
-
 class EscanoUltimate:
     def __init__(self):
-        self.cooldown_max = 600  # 10 seconds
+        self.cooldown_max = 600  # 10 seconds cooldown
         self.cooldown_timer = 0
-        self.charge_max = 120    # 2 seconds na hold
+        self.charge_min = 120    # 2 seconds MINIMUM hold
         self.charge_timer = 0
         self.is_charging = False
         self.charge_direction = None
         self.active_laser = None 
-        self.charge_particles = [] #MASI-SAVE ANG ENERGY PARTICLES
+        self.charge_particles = []
 
     def update(self):
         # Update ng cooldown
@@ -156,76 +155,73 @@ class EscanoUltimate:
                 self.is_charging = True
                 self.charge_direction = "left"
                 self.charge_timer += 1
-                return False
+                return False  # Walang auto-fire, hold lang nang hold
             elif right_click:
                 self.is_charging = True
                 self.charge_direction = "right"
                 self.charge_timer += 1
-                return False
-            
-        # Kapag binitawan ang click
+                return False  # Walang auto-fire, hold lang nang hold
+                
+        # Kapag BINITAWAN na ang click
         if self.is_charging:
-            if self.charge_timer >= self.charge_max:
-                # FULL CHARGE! FIRE ULTIMATE!
-                self.cooldown_timer = self.cooldown_max
-                
-                # Setup the laser attack area
-                laser_y = player_y - 10
-                laser_height = 40
-                
-                # exact center line ng laser para sa collision check
-                laser_center_y = player_y + (player_height // 2)
-                
-                if self.charge_direction == "right":
-                    start_x = player_x + player_width
-                    end_x = start_x + 800 # Default max length
-                    
-                    # I-check ang mga platforms para paikliin ang laser kung may pader
-                    for plat in platforms:
-                        # Check kung tinatamaan ng center line ng laser yung wall block
-                        if plat.top < laser_center_y < plat.bottom:
-                            # Kung nasa kanan ng player at mas malapit, 
-                            if plat.left > start_x and plat.left < end_x:
-                                end_x = plat.left
-                                
-                    laser_rect = pygame.Rect(start_x, laser_y, max(0, end_x - start_x), laser_height)
-                    
-                else: # Kaliwa
-                    start_x = player_x
-                    end_x = start_x - 800 # Default max length pakaliwa
-                    
-                    for plat in platforms:
-                        # Check kung tinatamaan ng center line ng laser yung wall block
-                        if plat.top < laser_center_y < plat.bottom:
-                            # Kung nasa kaliwa ng player at mas malapit
-                            if plat.right < start_x and plat.right > end_x:
-                                end_x = plat.right
-                                
-                    laser_rect = pygame.Rect(end_x, laser_y, max(0, start_x - end_x), laser_height)
-                
-                # Random limit for how many blocks the laser can break (between 3 to 9)
-                break_limit = random.randint(3, 9)
-                
-                self.active_laser = {
-                    'rect': laser_rect, 
-                    'timer': 15, 
-                    'dir': self.charge_direction,
-                    'max_breaks': break_limit,
-                    'current_breaks': 0
-                }
-                
-                self.is_charging = False
-                self.charge_timer = 0
-                return True
+            # Na-reach na ba ang 2 SECONDS (120 frames) na minimum hold?
+            if self.charge_timer >= self.charge_min: 
+                return self._fire_laser(player_x, player_y, player_width, player_height, platforms)
             else:
-                # Na-cancel
+                # Na-cancel! (Binitawan bago mag 2 seconds)
                 self.is_charging = False
                 self.charge_timer = 0
         return False
 
+    def _fire_laser(self, player_x, player_y, player_width, player_height, platforms):
+        self.cooldown_timer = self.cooldown_max
+        
+        # --- UNLIMITED DAMAGE CALCULATION ---
+        # Base damage kapag saktong 2 seconds (120 frames) = 40 damage.
+        # Bawat frame na lagpas sa 120 frames ay magdadagdag ng 0.5 damage.
+        # Ibig sabihin, bawat extrang segundo na naka-hold, +30 damage!
+        extra_frames = self.charge_timer - self.charge_min
+        calculated_damage = 40 + (extra_frames * 0.5) 
+        
+        laser_y = player_y - 10
+        laser_height = 40
+        laser_center_y = player_y + (player_height // 2)
+        
+        if self.charge_direction == "right":
+            start_x = player_x + player_width
+            end_x = start_x + 800
+            for plat in platforms:
+                if plat.top < laser_center_y < plat.bottom:
+                    if plat.left > start_x and plat.left < end_x:
+                        end_x = plat.left
+            laser_rect = pygame.Rect(start_x, laser_y, max(0, end_x - start_x), laser_height)
+        else: # Kaliwa
+            start_x = player_x
+            end_x = start_x - 800
+            for plat in platforms:
+                if plat.top < laser_center_y < plat.bottom:
+                    if plat.right < start_x and plat.right > end_x:
+                        end_x = plat.right
+            laser_rect = pygame.Rect(end_x, laser_y, max(0, start_x - end_x), laser_height)
+        
+        break_limit = random.randint(3, 9)
+        
+        self.active_laser = {
+            'rect': laser_rect, 
+            'timer': 15, 
+            'dir': self.charge_direction,
+            'max_breaks': break_limit,
+            'current_breaks': 0,
+            'damage': calculated_damage
+        }
+        
+        self.is_charging = False
+        self.charge_timer = 0
+        return True
+
     def get_player_shake(self):
         if self.is_charging:
-            intensity = int((self.charge_timer / self.charge_max) * 4)
+            intensity = min(8, int((self.charge_timer / self.charge_min) * 3))
             return random.randint(-intensity, intensity), random.randint(-intensity, intensity)
         return 0, 0
 

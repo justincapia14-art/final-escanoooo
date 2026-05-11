@@ -200,7 +200,7 @@ def play_master(screen, world_surface, width, height, clock, font, vignette_surf
                 e_rect = pygame.Rect(e.x, e.y, 40, 40)
                 if e.hp > 0 and laser_rect.colliderect(e_rect):
                     if e not in escano_ult.active_laser['hit_enemies']:
-                        e.hp -= 60 
+                        e.hp -= escano_ult.active_laser['damage'] 
                         escano_ult.active_laser['hit_enemies'].append(e) 
                         if e.hp <= 0:
                             enemy_dead_sound.play() 
@@ -214,7 +214,7 @@ def play_master(screen, world_surface, width, height, clock, font, vignette_surf
                 b_rect = pygame.Rect(b.x, b.y, b.width, b.height)
                 if b.hp > 0 and laser_rect.colliderect(b_rect):
                     if b not in escano_ult.active_laser['hit_bosses']:
-                        b.hp -= 200  
+                        b.hp -= escano_ult.active_laser['damage'] 
                         escano_ult.active_laser['hit_bosses'].append(b)
                         if b.hp <= 0:
                             enemy_dead_sound.play()
@@ -228,7 +228,7 @@ def play_master(screen, world_surface, width, height, clock, font, vignette_surf
                 bb_rect = pygame.Rect(bb.x, bb.y, bb.width, bb.height)
                 if bb.hp > 0 and laser_rect.colliderect(bb_rect):
                     if bb not in escano_ult.active_laser['hit_big_bosses']:
-                        bb.hp -= 200  
+                        bb.hp -= escano_ult.active_laser['damage'] 
                         escano_ult.active_laser['hit_big_bosses'].append(bb)
                         if bb.hp <= 0:
                             enemy_dead_sound.play()
